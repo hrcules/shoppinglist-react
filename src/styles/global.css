@@ -1,0 +1,88 @@
+:root {
+  /* ==== Cores ==== */
+  /* Base */
+
+  --gray-100: #fbf9fe;
+  --gray-200: #afabb6;
+  --gray-300: #252529;
+  --gray-400: #17171a;
+  --gray-500: #111112;
+  --gray-600: #0c0c0d;
+
+  /* Produto */
+
+  --purple-light: #a881e6;
+  --purple: #7450ac;
+  --purple-dark: #523480;
+
+  /* Feedback */
+
+  --success-light: #4e995e;
+  --success: #2f723d;
+
+  /* Cores de apoio */
+
+  --pink: #db5bbf;
+  --pink-dark: #251622;
+  --orange: #e07b67;
+  --orange-dark: #261a17;
+  --yellow: #bb9f3a;
+  --yellow-dark: #211e12;
+  --green: #8cad51;
+  --green-dark: #1c2015;
+  --blue: #7b94cb;
+  --blue-dark: #1a1d23;
+
+  /* ==== Tipografia ==== */
+
+  --heading-1-size: 24px;
+  --heading-1-weight: 700;
+  --heading-1-line-height: 100%;
+  --heading-2-size: 14px;
+  --heading-2-weight: 700;
+  --heading-2-line-height: 130%;
+  --button-size: 14px;
+  --button-weight: 600;
+  --button-line-height: 130%;
+  --tag-size: 12px;
+  --tag-weight: 600;
+  --tag-line-height: 130%;
+  --body-size: 12px;
+  --body-weight: 400;
+  --body-line-height: 130%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--gray-600);
+  color: var(--gray-100);
+  transition: 0.3s;
+
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}

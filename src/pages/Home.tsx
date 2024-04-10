@@ -21,7 +21,7 @@ import Item from "../components/Item";
 import { useAuth } from "../utils/hooks/useAuth";
 
 function Home() {
-  const { items, handleAddingItem } = useMakeItems();
+  const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
 
   const [itemFocused, setItemFocused] = useState(false);
@@ -292,15 +292,19 @@ function Home() {
           </form>
 
           <div className={styles.homeShoppingList}>
-            {items.map((item, index) => (
-              <Item
-                key={index}
-                category={item.category}
-                item={item.item}
-                quantity={item.quantity}
-                unit={item.unit}
-              />
-            ))}
+            {itemsLoading ? (
+              <p>loading</p>
+            ) : (
+              items.map((item, index) => (
+                <Item
+                  key={index}
+                  category={item.category}
+                  item={item.item}
+                  quantity={item.quantity}
+                  unit={item.unit}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>

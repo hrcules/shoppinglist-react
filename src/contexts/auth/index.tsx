@@ -28,10 +28,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    const teste = async () => {};
-
-    teste();
-
     loadStoreAuth();
   }, []);
 
@@ -56,6 +52,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             name: user.displayName,
             email: user.email,
             id: user.uid,
+          });
+
+          await setDoc(doc(db, "tasks", user.uid), {
+            tasks: [],
           });
 
           Cookies.set("@AuthFirebase:token", token!);

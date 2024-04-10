@@ -15,12 +15,14 @@ export type ItemProps = {
 export type MakeItemsProps = {
   items: ItemProps[];
   handleAddingItem: (item: ItemProps, user_id: string) => void;
+  itemsLoading: boolean;
 };
 
 const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
 
 const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<ItemProps[]>([]);
+  const [itemsLoading, setItemsLoading] = useState(false);
   const { user } = useAuth();
 
   const handleAddingItem = async (item: ItemProps, user_id: string) => {
@@ -47,24 +49,32 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    setItemsLoading(true);
+
     const handleExistingItems = async () => {
-      if (user) {
-        const taskRef = doc(db, "tasks", user.uid);
-        const taskDoc = await getDoc(taskRef);
-
-        const tasksArray: [ItemProps] = taskDoc.data()?.tasks;
-
-        setItems(tasksArray);
-      } else {
-        toast.error("não foi possível carregar as tasks");
+      if (!user) {
+        toast.error("Não foi possível carregar as tasks.");
+        return;
       }
+
+      const taskRef = doc(db, "tasks", user.uid);
+      const taskDoc = await getDoc(taskRef);
+
+      const tasksArray: [ItemProps] = taskDoc.data()?.tasks || [];
+
+      setItems(tasksArray);
+      setItemsLoading(false);
     };
 
-    handleExistingItems();
-  }, []);
+    if (user) {
+      handleExistingItems();
+    }
+  }, [user]);
 
   return (
-    <MakeItemsContext.Provider value={{ items, handleAddingItem }}>
+    <MakeItemsContext.Provider
+      value={{ items, handleAddingItem, itemsLoading }}
+    >
       {children}
     </MakeItemsContext.Provider>
   );

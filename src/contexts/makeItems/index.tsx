@@ -56,14 +56,11 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (taskDoc.exists()) {
         const tasksArray: [ItemProps] = taskDoc.data().tasks;
-        tasksArray.push(item);
-        console.log(tasksArray);
+        tasksArray.unshift(item); // Adiciona a nova tarefa como a primeira da lista
 
         await updateDoc(taskRef, { tasks: tasksArray });
 
         setItems(tasksArray);
-
-        console.log("Tarefa adicionada com sucesso!");
       } else {
         console.error("Documento não encontrado para o usuário.");
       }

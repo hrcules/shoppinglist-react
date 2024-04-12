@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { EllipsisVertical, Trash } from "lucide-react";
+import { EllipsisVertical, ShoppingCart, Trash } from "lucide-react";
 
 import styles from "../styles/components/Item.component.module.css";
 import { ItemProps } from "../contexts/makeItems";
@@ -18,9 +18,7 @@ function Item({ id, item, category, quantity, unit, completed }: ItemProps) {
   const editRef = useRef<HTMLDivElement | null>(null);
 
   const handleIconViewer = (icon: iconProps) => {
-    if (!icon) {
-      <></>;
-    } else if (icon.name === "Sandwich") {
+    if (icon.name === "Sandwich") {
       return <Sandwich size={icon.size} color={icon.color} />;
     } else if (icon.name === "Carrot") {
       return <Carrot size={icon.size} color={icon.color} />;
@@ -30,6 +28,8 @@ function Item({ id, item, category, quantity, unit, completed }: ItemProps) {
       return <Apple size={icon.size} color={icon.color} />;
     } else if (icon.name === "Milk") {
       return <Milk size={icon.size} color={icon.color} />;
+    } else if (icon.name === "ShoppingCart") {
+      return <ShoppingCart size={icon.size} color={icon.color} />;
     }
   };
 

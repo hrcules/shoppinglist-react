@@ -23,6 +23,8 @@ import { useMakeItems } from "../utils/hooks/useMakeItems";
 import Item from "../components/Item";
 import { useAuth } from "../utils/hooks/useAuth";
 
+import { FadeLoader } from "react-spinners";
+
 function Home() {
   const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
@@ -299,7 +301,18 @@ function Home() {
 
           <div className={styles.homeShoppingList}>
             {itemsLoading ? (
-              <p>loading</p>
+              <div className={styles.homeLoading}>
+                <FadeLoader
+                  height={15}
+                  width={5}
+                  radius={30}
+                  color="var(--purple)"
+                />
+              </div>
+            ) : items.length === 0 ? (
+              <div className={styles.homeLoading}>
+                <p>adicione items para sua lista. 😊</p>
+              </div>
             ) : (
               items.map((item, index) => (
                 <Item

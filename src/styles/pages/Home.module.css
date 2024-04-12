@@ -231,3 +231,15 @@
 
   margin-top: 40px;
 }
+
+.homeLoading {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homeLoading p {
+  font-size: 14px;
+  color: var(--gray-200);
+}

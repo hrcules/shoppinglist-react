@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Trash } from "lucide-react";
 
 import styles from "../styles/components/Item.component.module.css";
 import { ItemProps } from "../contexts/makeItems";
 
 import { Sandwich, Carrot, Beef, Apple, Milk } from "lucide-react";
 import { iconProps } from "../utils/categories";
+import { useMakeItems } from "../utils/hooks/useMakeItems";
+import { useAuth } from "../utils/hooks/useAuth";
+import toast from "react-hot-toast";
 
-function Item({ item, category, quantity, unit }: ItemProps) {
+function Item({ id, item, category, quantity, unit }: ItemProps) {
   const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
+  const [isEditOptionsOpen, setIsEditOptionsOpen] = useState(false);
+  const { user } = useAuth();
+  const { handleDeleteTask } = useMakeItems();
 
   const handleIconViewer = (icon: iconProps) => {
     if (!icon) {
@@ -28,6 +30,19 @@ function Item({ item, category, quantity, unit }: ItemProps) {
     } else if (icon.name === "Milk") {
       return <Milk size={icon.size} color={icon.color} />;
     }
+  };
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  const handleDelete = async () => {
+    if (!user) {
+      return toast.error("Não é possível deletar o item.");
+    }
+
+    handleDeleteTask(user?.uid, id);
+    setIsEditOptionsOpen(false);
   };
 
   return (
@@ -78,13 +93,39 @@ function Item({ item, category, quantity, unit }: ItemProps) {
           </p>
         </div>
 
-        <EllipsisVertical
-          size={16}
-          color="var(--purple-light)"
-          style={{
-            cursor: "pointer",
-          }}
-        />
+        <div title="Editar">
+          <EllipsisVertical
+            size={16}
+            color="var(--purple-light)"
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={() => setIsEditOptionsOpen(!isEditOptionsOpen)}
+          />
+        </div>
+
+        {isEditOptionsOpen && (
+          <div className={styles.itemEditOpitionContainer}>
+            {/* Adicionar essa funcionalidade mais pra frente. */}
+            {/* <div className={styles.itemEditOption}>
+              <Pencil size={18} color="var(--gray-200)" />
+              <p>Editar</p>
+            </div> */}
+            <div
+              className={styles.itemEditOption}
+              onClick={() => handleDelete()}
+            >
+              <Trash size={18} color="var(--orange)" />
+              <p
+                style={{
+                  color: "var(--orange)",
+                }}
+              >
+                Deletar
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

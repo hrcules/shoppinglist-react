@@ -11,7 +11,10 @@ import {
   Beef,
   Apple,
   Milk,
+  ShoppingCart,
 } from "lucide-react";
+
+import { generate } from "shortid";
 
 import { categories, categoriesProps, iconProps } from "../utils/categories";
 import { units, unitProps } from "../utils/unit";
@@ -85,6 +88,8 @@ function Home() {
       return <Apple size={icon.size} color={icon.color} />;
     } else if (icon.name === "Milk") {
       return <Milk size={icon.size} color={icon.color} />;
+    } else if (icon.name === "ShoppingCart") {
+      return <ShoppingCart size={icon.size} color={icon.color} />;
     }
   };
 
@@ -108,6 +113,7 @@ function Home() {
 
     handleAddingItem(
       {
+        id: generate(),
         item: title,
         quantity: quantityUnit,
         unit: selectedUnit ? selectedUnit?.complet : "",
@@ -139,7 +145,7 @@ function Home() {
           </div>
         </div>
 
-        <Toaster position="bottom-left" />
+        <Toaster position="top-center" />
 
         <div className={styles.homeContent}>
           <form onSubmit={(e) => handleSubmit(e)}>
@@ -298,6 +304,7 @@ function Home() {
               items.map((item, index) => (
                 <Item
                   key={index}
+                  id={item.id}
                   category={item.category}
                   item={item.item}
                   quantity={item.quantity}

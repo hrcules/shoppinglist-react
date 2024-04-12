@@ -6,6 +6,7 @@ import { useAuth } from "../../utils/hooks/useAuth";
 import toast from "react-hot-toast";
 
 export type ItemProps = {
+  id: string;
   item: string;
   quantity: number;
   unit: string;
@@ -14,8 +15,9 @@ export type ItemProps = {
 
 export type MakeItemsProps = {
   items: ItemProps[];
-  handleAddingItem: (item: ItemProps, user_id: string) => void;
   itemsLoading: boolean;
+  handleAddingItem: (item: ItemProps, user_id: string) => void;
+  handleDeleteTask: (user_id: string, task_id: string) => void;
 };
 
 const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
@@ -48,6 +50,24 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const handleDeleteTask = async (user_id: string, task_id: string) => {
+    const taskRef = doc(db, "tasks", user_id);
+    const taskDoc = await getDoc(taskRef);
+
+    if (taskDoc.exists()) {
+      const tasksArray = taskDoc.data().tasks || [];
+      const novaListaTarefas = tasksArray.filter(
+        (task: ItemProps) => task.id !== task_id
+      );
+
+      await updateDoc(taskRef, { tasks: novaListaTarefas });
+      setItems(novaListaTarefas);
+      toast.success("Item deletado com sucesso!");
+    } else {
+      console.error("Documento não encontrado para o usuário.");
+    }
+  };
+
   useEffect(() => {
     setItemsLoading(true);
 
@@ -73,7 +93,7 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <MakeItemsContext.Provider
-      value={{ items, handleAddingItem, itemsLoading }}
+      value={{ items, handleAddingItem, itemsLoading, handleDeleteTask }}
     >
       {children}
     </MakeItemsContext.Provider>

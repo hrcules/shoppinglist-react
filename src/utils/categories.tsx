@@ -68,4 +68,15 @@ export const categories: categoriesProps[] = [
     color: "var(--blue)",
     supporting_color: "var(--blue-dark)",
   },
+  {
+    id: 6,
+    label: "Mercado",
+    icon: {
+      name: "ShoppingCart",
+      color: "var(--yellow)",
+      size: 16,
+    },
+    color: "var(--yellow)",
+    supporting_color: "var(--yellow-dark)",
+  },
 ];

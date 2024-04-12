@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EllipsisVertical, Trash } from "lucide-react";
 
 import styles from "../styles/components/Item.component.module.css";
@@ -15,6 +15,8 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
   const [isEditOptionsOpen, setIsEditOptionsOpen] = useState(false);
   const { user } = useAuth();
   const { handleDeleteTask } = useMakeItems();
+
+  const editRef = useRef<HTMLDivElement | null>(null);
 
   const handleIconViewer = (icon: iconProps) => {
     if (!icon) {
@@ -44,6 +46,19 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
     handleDeleteTask(user?.uid, id);
     setIsEditOptionsOpen(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (editRef.current && !editRef.current.contains(event.target as Node)) {
+        setIsEditOptionsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editRef]);
 
   return (
     <div
@@ -105,7 +120,7 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
         </div>
 
         {isEditOptionsOpen && (
-          <div className={styles.itemEditOpitionContainer}>
+          <div className={styles.itemEditOpitionContainer} ref={editRef}>
             {/* Adicionar essa funcionalidade mais pra frente. */}
             {/* <div className={styles.itemEditOption}>
               <Pencil size={18} color="var(--gray-200)" />

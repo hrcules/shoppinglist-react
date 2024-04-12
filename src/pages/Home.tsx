@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "../styles/pages/Home.module.css";
 import {
   ChevronDown,
@@ -28,6 +28,9 @@ import { FadeLoader } from "react-spinners";
 function Home() {
   const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
+
+  const categoryRef = useRef<HTMLDivElement | null>(null);
+  const unitRef = useRef<HTMLDivElement | null>(null);
 
   const [itemFocused, setItemFocused] = useState(false);
   const [quantityFocused, setQuantityFocused] = useState(false);
@@ -127,6 +130,25 @@ function Home() {
   };
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        categoryRef.current &&
+        !categoryRef.current.contains(event.target as Node)
+      ) {
+        setCategoryOptionIsOpen(false);
+      }
+      if (unitRef.current && !unitRef.current.contains(event.target as Node)) {
+        setUnitOptionIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [categoryRef, unitRef]);
+
+  useEffect(() => {
     setSelectedUnit(units[0]);
   }, []);
 
@@ -217,6 +239,7 @@ function Home() {
                     style={{
                       display: unitOptionIsOpen === false ? "none" : "initial",
                     }}
+                    ref={unitRef}
                   >
                     {units.map((unit) => (
                       <div
@@ -272,6 +295,7 @@ function Home() {
                     style={{
                       display: categoryOptionIsOpen ? "initial" : "none",
                     }}
+                    ref={categoryRef}
                   >
                     {categories.map((category) => (
                       <div

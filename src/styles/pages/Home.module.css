@@ -184,6 +184,7 @@
   background-color: var(--gray-400);
   border: 1px solid var(--gray-300);
   border-radius: 6px;
+  z-index: 10;
 }
 
 .formUnitOption,

@@ -162,7 +162,6 @@ function Home() {
             <p className={styles.homeUserName}>
               olá, <span>{user?.displayName}</span>{" "}
             </p>
-            <p className={styles.homeUserEmail}>{user?.email}</p>
             <p className={styles.homeUserExit} onClick={() => signOut()}>
               Logout <DoorOpen color="var(--orange)" size={20} />
             </p>

@@ -8,7 +8,8 @@
   width: 100vw;
   background-image: url("../../assets/Image.png");
   background-position: center;
-  background-size: contain;
+  background-size: auto;
+  background-repeat: repeat;
 }
 
 .Content {
@@ -20,7 +21,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 320px;
+  width: 360px;
   height: 445px;
 }
 
@@ -81,4 +82,18 @@
 
 .FormButtonProvider:hover {
   background-color: var(--gray-200);
+}
+
+@media (max-width: 767px) {
+  .Container {
+    background-image: url("../../assets/image-responsive.png");
+  }
+
+  .Content {
+    justify-content: center;
+    width: calc(100% - 10%);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
 }

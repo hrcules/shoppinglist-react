@@ -98,6 +98,7 @@ input[type="checkbox"]:checked::before {
   background-color: var(--gray-400);
   border-radius: 6px;
   border: 1px solid var(--gray-300);
+  z-index: 10;
 }
 
 .itemEditOption {
@@ -120,4 +121,14 @@ input[type="checkbox"]:checked::before {
 
 .itemEditOption:last-child {
   border-top: 1px solid var(--gray-300);
+}
+
+@media (max-width: 767px) {
+  .itemEditOpitionContainer {
+    right: 0;
+    bottom: -32px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
 }

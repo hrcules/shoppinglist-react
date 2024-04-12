@@ -29,6 +29,7 @@ import Pagination from "../components/Pagination";
 function Home() {
   const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
+  const { totalPages } = useMakeItems();
 
   const categoryRef = useRef<HTMLDivElement | null>(null);
   const unitRef = useRef<HTMLDivElement | null>(null);
@@ -324,7 +325,8 @@ function Home() {
             </button>
           </form>
 
-          <Pagination />
+          {totalPages > 1 && <Pagination />}
+          {/* <Pagination /> */}
 
           <div className={styles.homeShoppingList}>
             {itemsLoading ? (

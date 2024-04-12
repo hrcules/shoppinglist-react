@@ -6,8 +6,6 @@ import styles from "../styles/components/Pagination.component.module.css";
 function Pagination() {
   const { totalPages, currentPage, prevPage, nextPage } = useMakeItems();
 
-  console.log(totalPages);
-
   const renderPageNumbers = () => {
     const pagesToShow = 3; // Quantidade de números de página a serem mostrados antes de exibir "..."
     const pageNumbers = [];

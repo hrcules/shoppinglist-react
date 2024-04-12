@@ -30,6 +30,7 @@ function Home() {
   const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
   const { totalPages } = useMakeItems();
+  const firstName = user?.displayName?.split(" ")[0];
 
   const categoryRef = useRef<HTMLDivElement | null>(null);
   const unitRef = useRef<HTMLDivElement | null>(null);
@@ -163,7 +164,7 @@ function Home() {
 
           <div className={styles.homeUser}>
             <p className={styles.homeUserName}>
-              olá, <span>{user?.displayName}</span>{" "}
+              olá, <span>{firstName}</span>{" "}
             </p>
             <p className={styles.homeUserExit} onClick={() => signOut()}>
               Logout <DoorOpen color="var(--orange)" size={20} />
@@ -326,7 +327,6 @@ function Home() {
           </form>
 
           {totalPages > 1 && <Pagination />}
-          {/* <Pagination /> */}
 
           <div className={styles.homeShoppingList}>
             {itemsLoading ? (

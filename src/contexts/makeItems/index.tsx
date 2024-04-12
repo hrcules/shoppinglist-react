@@ -11,6 +11,7 @@ export type ItemProps = {
   quantity: number;
   unit: string;
   category: categoriesProps;
+  completed: boolean;
 };
 
 export type MakeItemsProps = {
@@ -18,6 +19,7 @@ export type MakeItemsProps = {
   itemsLoading: boolean;
   handleAddingItem: (item: ItemProps, user_id: string) => void;
   handleDeleteTask: (user_id: string, task_id: string) => void;
+  handleToggleTaskCompletion: (user_id: string, task_id: string) => void;
 };
 
 const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
@@ -68,6 +70,37 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const handleToggleTaskCompletion = async (
+    user_id: string,
+    task_id: string
+  ) => {
+    try {
+      const taskRef = doc(db, "tasks", user_id);
+      const taskDoc = await getDoc(taskRef);
+
+      if (taskDoc.exists()) {
+        const tasksArray: ItemProps[] = taskDoc.data().tasks || [];
+        const updatedTasks = tasksArray.map((task) => {
+          if (task.id === task_id) {
+            return {
+              ...task,
+              completed: !task.completed, // Alterna entre true e false
+            };
+          }
+          return task;
+        });
+
+        await updateDoc(taskRef, { tasks: updatedTasks });
+        setItems(updatedTasks);
+        console.log("Tarefa atualizada com sucesso!");
+      } else {
+        console.error("Documento não encontrado para o usuário.");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar a tarefa:", error);
+    }
+  };
+
   useEffect(() => {
     setItemsLoading(true);
 
@@ -93,7 +126,13 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <MakeItemsContext.Provider
-      value={{ items, handleAddingItem, itemsLoading, handleDeleteTask }}
+      value={{
+        items,
+        handleAddingItem,
+        itemsLoading,
+        handleDeleteTask,
+        handleToggleTaskCompletion,
+      }}
     >
       {children}
     </MakeItemsContext.Provider>

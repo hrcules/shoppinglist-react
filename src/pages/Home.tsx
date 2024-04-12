@@ -123,6 +123,7 @@ function Home() {
         quantity: quantityUnit,
         unit: selectedUnit ? selectedUnit?.complet : "",
         category: selectedCategory,
+        completed: false,
       },
       user ? user.uid : ""
     );
@@ -345,6 +346,7 @@ function Home() {
                   item={item.item}
                   quantity={item.quantity}
                   unit={item.unit}
+                  completed={item.completed}
                 />
               ))
             )}

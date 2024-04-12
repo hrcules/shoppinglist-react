@@ -10,11 +10,10 @@ import { useMakeItems } from "../utils/hooks/useMakeItems";
 import { useAuth } from "../utils/hooks/useAuth";
 import toast from "react-hot-toast";
 
-function Item({ id, item, category, quantity, unit }: ItemProps) {
-  const [isChecked, setIsChecked] = useState(false);
+function Item({ id, item, category, quantity, unit, completed }: ItemProps) {
   const [isEditOptionsOpen, setIsEditOptionsOpen] = useState(false);
   const { user } = useAuth();
-  const { handleDeleteTask } = useMakeItems();
+  const { handleDeleteTask, handleToggleTaskCompletion } = useMakeItems();
 
   const editRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +34,10 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
   };
 
   const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+    if (!user) {
+      return toast.error("Não foi possível atualizar o item.");
+    }
+    handleToggleTaskCompletion(user?.uid, id);
   };
 
   const handleDelete = async () => {
@@ -63,26 +65,26 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
   return (
     <div
       className={`${styles.itemContainer} ${
-        isChecked ? styles.itemContainerChecked : ""
+        completed ? styles.itemContainerChecked : ""
       }`}
     >
       <div className={styles.itemLeft}>
         <input
           type="checkbox"
-          checked={isChecked}
+          checked={completed}
           onChange={handleCheckboxChange}
         />
         <div className={styles.itemLeftText}>
           <p
             className={`${styles.itemTitle} ${
-              isChecked ? styles.titleIsChecked : ""
+              completed ? styles.titleIsChecked : ""
             }`}
           >
             {item}
           </p>
           <p
             className={`${styles.itemDescription} ${
-              isChecked ? styles.isChecked : ""
+              completed ? styles.isChecked : ""
             }`}
           >
             {quantity} {unit}
@@ -92,7 +94,7 @@ function Item({ id, item, category, quantity, unit }: ItemProps) {
       <div className={styles.itemRight}>
         <div
           className={`${styles.ItemCategory} ${
-            isChecked ? styles.isChecked : ""
+            completed ? styles.isChecked : ""
           }`}
           style={{
             backgroundColor: category.supporting_color,

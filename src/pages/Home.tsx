@@ -24,6 +24,7 @@ import Item from "../components/Item";
 import { useAuth } from "../utils/hooks/useAuth";
 
 import { FadeLoader } from "react-spinners";
+import Pagination from "../components/Pagination";
 
 function Home() {
   const { items, handleAddingItem, itemsLoading } = useMakeItems();
@@ -322,6 +323,8 @@ function Home() {
               <Plus />
             </button>
           </form>
+
+          <Pagination />
 
           <div className={styles.homeShoppingList}>
             {itemsLoading ? (

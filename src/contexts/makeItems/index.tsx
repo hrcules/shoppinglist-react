@@ -20,14 +20,34 @@ export type MakeItemsProps = {
   handleAddingItem: (item: ItemProps, user_id: string) => void;
   handleDeleteTask: (user_id: string, task_id: string) => void;
   handleToggleTaskCompletion: (user_id: string, task_id: string) => void;
+  currentPage: number;
+  totalPages: number;
+  nextPage: () => void;
+  prevPage: () => void;
 };
 
 const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
 
 const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const [items, setItems] = useState<ItemProps[]>([]);
   const [itemsLoading, setItemsLoading] = useState(false);
-  const { user } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1); // Página atual
+  const [tasksPerPage, setTaskPerPage] = useState(7);
+
+  const startIndex = (currentPage - 1) * tasksPerPage;
+  const endIndex = startIndex + tasksPerPage;
+
+  const displayedItems = items.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(items.length / tasksPerPage);
+
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
 
   const handleAddingItem = async (item: ItemProps, user_id: string) => {
     try {
@@ -101,6 +121,19 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Atualiza a quantidade de tarefas por página ao carregar a página ou redimensionar a janela
+  useEffect(() => {
+    const updateTasksPerPage = () => {
+      if (window.innerWidth <= 767) {
+        setTaskPerPage(4); // Por exemplo, 15 tarefas por página para telas maiores que 1200px
+      } else {
+        setTaskPerPage(7); // Quantidade padrão de tarefas por página
+      }
+    };
+    window.addEventListener("resize", updateTasksPerPage);
+    return () => window.removeEventListener("resize", updateTasksPerPage);
+  }, []);
+
   useEffect(() => {
     setItemsLoading(true);
 
@@ -127,11 +160,15 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <MakeItemsContext.Provider
       value={{
-        items,
+        items: displayedItems,
         handleAddingItem,
         itemsLoading,
         handleDeleteTask,
         handleToggleTaskCompletion,
+        currentPage,
+        totalPages,
+        nextPage,
+        prevPage,
       }}
     >
       {children}

@@ -31,6 +31,7 @@ function Home() {
   const [title, setTitle] = useState("");
   const [search, setSearch] = useState("");
   const [listFilter, setListFilter] = useState<ListFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<number | "all">("all");
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     try {
       return localStorage.getItem("shopping-list-theme") === "light" ? "light" : "dark";
@@ -116,8 +117,9 @@ function Home() {
   const visibleItems = useMemo(() => items.filter((item) => {
     const matchesSearch = item.item.toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR"));
     const matchesStatus = listFilter === "all" || (listFilter === "pending" ? !item.completed : item.completed);
-    return matchesSearch && matchesStatus;
-  }), [items, search, listFilter]);
+    const matchesCategory = categoryFilter === "all" || item.category.id === categoryFilter;
+    return matchesSearch && matchesStatus && matchesCategory;
+  }), [items, search, listFilter, categoryFilter]);
 
   const pendingCount = items.filter((item) => !item.completed).length;
   const completedCount = items.filter((item) => item.completed).length;
@@ -214,6 +216,10 @@ function Home() {
               <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar item..." aria-label="Buscar item na lista" />
               {search && <button type="button" aria-label="Limpar busca" onClick={() => setSearch("")}><X size={16} /></button>}
             </label>
+            <select className={styles.categoryFilter} aria-label="Filtrar por categoria" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value === "all" ? "all" : Number(e.target.value))}>
+              <option value="all">Todas categorias</option>
+              {categories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}
+            </select>
             <div className={styles.filterTabs} role="group" aria-label="Filtrar itens">
               <button type="button" className={listFilter === "all" ? styles.filterActive : ""} onClick={() => setListFilter("all")}>Todos <span>{items.length}</span></button>
               <button type="button" className={listFilter === "pending" ? styles.filterActive : ""} onClick={() => setListFilter("pending")}>Pendentes <span>{pendingCount}</span></button>

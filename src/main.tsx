@@ -4,17 +4,15 @@ import App from "./App.tsx";
 
 import "./styles/global.css";
 
-// Apply the saved appearance before React renders to avoid a theme flash on
-// routes such as login that do not mount the shopping-list page.
+// Aplica o tema claro antes da renderização do React.
+document.documentElement.dataset.theme = "light";
+
 try {
-  const savedTheme = localStorage.getItem("shopping-list-theme");
-  document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
-  document.querySelector('meta[name="theme-color"]')?.setAttribute(
-    "content",
-    savedTheme === "light" ? "#f7f5fa" : "#0c0c0d"
-  );
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", "#f7f5fa");
 } catch {
-  document.documentElement.dataset.theme = "dark";
+  // A aplicação continua funcionando mesmo se a meta tag não existir.
 }
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
@@ -28,5 +26,5 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -1,13 +1,300 @@
 @import url("../global.css");
-.Container { display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%; padding:24px; background:radial-gradient(ellipse at 20% 15%,color-mix(in srgb,var(--purple) 13%,var(--page-bg)),transparent 42%),var(--page-bg); }
-.Content { width:min(100%,410px); padding:34px 30px; display:flex; align-items:center; flex-direction:column; border:1px solid var(--border); border-radius:25px; background:var(--surface); box-shadow:var(--card-shadow); }
-.Content > h1 { font-size:27px; font-weight:800; letter-spacing:-.8px; color:var(--text-primary); }
-.descriptionApp { margin-top:13px; text-align:center; font-size:14px; line-height:1.65; color:var(--text-secondary); }
-.descriptionApp span { color:var(--purple-light); font-weight:750; }
-.loginButtonContainer { width:100%; display:flex; flex-direction:column; align-items:stretch; justify-content:center; }
-.loginIconsApresentation { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; padding:30px 0; }
-.loginIconsApresentation span { display:grid; place-items:center; width:48px; height:48px; border:1px solid var(--border); border-radius:15px; background:var(--surface-muted); }
-.FormButtonProvider { width:100%; min-height:48px; padding:9px 14px; margin-top:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text-primary); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .2s,border .2s,transform .2s; }
-.FormButtonProvider img { width:22px; height:22px; margin:0; }
-.FormButtonProvider:hover { background:var(--surface-hover); border-color:var(--purple-light); transform:translateY(-1px); }
-@media(max-width:767px) { .Container { padding:18px; } .Content { width:100%; max-width:390px; padding:30px 22px; border-radius:22px; } .loginIconsApresentation { gap:7px; padding:25px 0; } .loginIconsApresentation span { width:43px; height:43px; } .loginIconsApresentation svg { width:26px; height:26px; } }
+
+.Container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 32px 20px;
+  background:
+    radial-gradient(
+      ellipse at 15% 10%,
+      rgba(116, 80, 172, 0.09),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 90% 90%,
+      rgba(168, 129, 230, 0.06),
+      transparent 40%
+    ),
+    #ffffff;
+  color: #211a2b;
+}
+
+.Content {
+  width: min(100%, 440px);
+  padding: 32px;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  border: 1px solid #e7e1ee;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 12px 36px rgba(57, 41, 75, 0.08);
+  animation: enter 0.45s ease both;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 34px;
+}
+
+.brandIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: var(--purple);
+  color: #ffffff;
+  box-shadow: 0 5px 16px rgba(116, 80, 172, 0.25);
+}
+
+.brandName {
+  color: #211a2b;
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.4px;
+}
+
+.introduction {
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #7450ac;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.introduction h1 {
+  color: #211a2b;
+  font-size: clamp(30px, 7vw, 37px);
+  font-weight: 850;
+  line-height: 1.16;
+  letter-spacing: -1.5px;
+}
+
+.introduction h1 span {
+  color: #7450ac;
+}
+
+.descriptionApp {
+  max-width: 320px;
+  margin: 14px auto 0;
+  color: #62596e;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.loginIconsApresentation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 26px 0 30px;
+}
+
+.categoryIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #e7e1ee;
+  border-radius: 14px;
+  background: #f0edf5;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.categoryIcon:hover {
+  transform: translateY(-3px);
+  background: #eee8f6;
+  border-color: #a881e6;
+}
+
+.loginOptions {
+  padding-top: 23px;
+  border-top: 1px solid #e7e1ee;
+}
+
+.loginOptionsHeader {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.loginOptionsHeader h2 {
+  color: #211a2b;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+}
+
+.loginOptionsHeader p {
+  margin-top: 5px;
+  color: #8d8498;
+  font-size: 12px;
+}
+
+.loginButtonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  width: 100%;
+}
+
+.FormButtonProvider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 50px;
+  height: auto;
+  padding: 12px 16px;
+  border: 1px solid #e7e1ee;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #211a2b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.FormButtonProvider img {
+  display: block;
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.FormButtonProvider:hover {
+  background: #f0edf5;
+  color: #211a2b;
+  border-color: #a881e6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(116, 80, 172, 0.08);
+}
+
+.FormButtonProvider:active {
+  transform: translateY(0);
+}
+
+.FormButtonProvider:focus-visible {
+  outline: 2px solid #a881e6;
+  outline-offset: 3px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 27px;
+  padding-top: 20px;
+  border-top: 1px solid #e7e1ee;
+}
+
+.footerIcon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(116, 80, 172, 0.09);
+  color: #7450ac;
+}
+
+.footer p {
+  color: #8d8498;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: left;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .Container {
+    padding: 20px 14px;
+  }
+
+  .Content {
+    width: 100%;
+    max-width: 390px;
+    padding: 27px 21px;
+    border-radius: 21px;
+  }
+
+  .brand {
+    margin-bottom: 29px;
+  }
+
+  .introduction h1 {
+    font-size: 32px;
+  }
+
+  .descriptionApp {
+    font-size: 12px;
+  }
+
+  .loginIconsApresentation {
+    gap: 8px;
+    padding: 23px 0 26px;
+  }
+
+  .categoryIcon {
+    width: 41px;
+    height: 41px;
+    border-radius: 12px;
+  }
+
+  .categoryIcon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .footer {
+    margin-top: 23px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Content {
+    animation: none;
+  }
+
+  .categoryIcon,
+  .FormButtonProvider {
+    transition: none;
+  }
+}

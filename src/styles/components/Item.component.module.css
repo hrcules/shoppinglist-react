@@ -1,134 +1,25 @@
-.itemContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background-color: var(--gray-400);
-  border: 1px solid var(--gray-300);
-  border-radius: 8px;
-  height: 68px;
-  padding: 16px;
-}
-
-.itemLeft,
-.itemRight {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-}
-
-.itemTitle {
-  font-size: var(--heading-2-size);
-  font-weight: var(--heading-2-weight);
-  line-height: var(--heading-2-line-height);
-
-  color: var(--gray-100);
-}
-
-.itemDescription {
-  font-size: var(--body-size);
-  font-weight: var(--body-weight);
-  line-height: var(--body-line-height);
-  margin-top: 2px;
-  text-transform: lowercase;
-
-  color: var(--gray-200);
-}
-
-.ItemCategory {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  width: 83px;
-  height: 32px;
-  border-radius: 999px;
-}
-
-.ItemCategory p {
-  font-size: var(--tag-size);
-  font-weight: var(--tag-weight);
-  line-height: var(--tag-line-height);
-}
-
-input[type="checkbox"] {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background-color: var(--gray-300);
-  border-radius: 2px;
-  border: 1px solid var(--purple-light);
-  cursor: pointer;
-  position: relative;
-}
-
-input[type="checkbox"]:checked {
-  background-color: var(--success);
-  border-color: var(--success);
-}
-
-input[type="checkbox"]:checked::before {
-  content: "✓";
-  font-size: 12px;
-  color: var(--gray-100);
-  position: absolute;
-  top: -2px;
-  left: 2px;
-}
-
-.itemContainerChecked {
-  background-color: var(--gray-500);
-  border: 1px solid var(--gray-400);
-}
-
-.titleIsChecked {
-  filter: brightness(0.5);
-  text-decoration: line-through;
-}
-
-.isChecked {
-  filter: brightness(0.5);
-}
-
-.itemEditOpitionContainer {
-  position: absolute;
-  right: -128px;
-  background-color: var(--gray-400);
-  border-radius: 6px;
-  border: 1px solid var(--gray-300);
-  z-index: 10;
-}
-
-.itemEditOption {
-  display: flex;
-  gap: 8px;
-  height: 30px;
-  align-items: center;
-  padding: 0 12px;
-  cursor: pointer;
-}
-
-.itemEditOption:hover {
-  background-color: var(--gray-300);
-}
-
-.itemEditOption p {
-  font-size: 14px;
-  color: var(--gray-100);
-}
-
-.itemEditOption:last-child {
-  border-top: 1px solid var(--gray-300);
-}
-
-@media (max-width: 767px) {
-  .itemEditOpitionContainer {
-    right: 0;
-    bottom: -32px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-}
+.itemContainer { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:70px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:15px; transition:border-color .2s,background .2s,transform .2s; }
+.itemContainer:hover { border-color:color-mix(in srgb,var(--purple-light) 42%,var(--border)); transform:translateY(-1px); }
+.itemLeft,.itemRight { display:flex; align-items:center; gap:12px; position:relative; min-width:0; }
+.itemLeft { flex:1; }
+.itemLeft input[type="checkbox"] { appearance:none; flex-shrink:0; width:19px; height:19px; border:1.5px solid #746b80; border-radius:6px; background:var(--input-bg); cursor:pointer; display:grid; place-items:center; transition:background .2s,border .2s; }
+.itemLeft input[type="checkbox"]:checked { background:var(--success); border-color:var(--success); }
+.itemLeft input[type="checkbox"]:checked::before { content:"✓"; color:white; font-size:13px; font-weight:800; }
+.itemLeftText { min-width:0; }
+.itemTitle { color:var(--text-primary); font-size:13px; font-weight:700; line-height:1.4; overflow-wrap:anywhere; }
+.itemDescription { margin-top:3px; color:var(--text-muted); font-size:11px; line-height:1.35; }
+.itemContainerChecked { background:var(--surface-muted); }
+.titleIsChecked { color:var(--text-muted); text-decoration:line-through; }
+.isChecked { opacity:.72; }
+.itemRight { flex-shrink:0; gap:12px; }
+.ItemCategory { display:flex; align-items:center; justify-content:center; gap:5px; min-width:82px; min-height:30px; padding:0 9px; border-radius:9px; }
+.ItemCategory p { font-size:10px; font-weight:750; white-space:nowrap; }
+.itemRight > div[title="Editar"] { display:grid; place-items:center; }
+.itemRight > div[title="Editar"] svg { padding:5px; box-sizing:content-box; border-radius:9px; }
+.itemRight > div[title="Editar"] svg:hover { background:var(--surface-hover); }
+.itemEditOpitionContainer { position:absolute; top:calc(100% + 8px); right:0; min-width:128px; padding:5px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:0 12px 28px #0002; z-index:40; }
+.itemEditOption { display:flex; align-items:center; gap:9px; min-height:38px; padding:0 10px; border-radius:8px; cursor:pointer; }
+.itemEditOption:hover { background:var(--surface-hover); }
+.itemEditOption p { font-size:12px; color:var(--text-primary); }
+.itemEditOption:last-child { border-top:0; }
+@media(max-width:480px) { .itemContainer { padding:12px; gap:7px; min-height:66px; border-radius:13px; } .itemLeft,.itemRight { gap:8px; } .itemTitle { font-size:12px; } .itemDescription { font-size:10px; } .ItemCategory { min-width:0; padding:0 7px; gap:4px; min-height:27px; } .ItemCategory p { font-size:9px; } .ItemCategory svg { width:13px; height:13px; } .itemRight { gap:5px; } }

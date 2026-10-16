@@ -448,24 +448,32 @@ function Home() {
               )}
             </label>
 
-            <select
-              className={styles.categoryFilter}
-              aria-label="Filtrar por categoria"
-              value={categoryFilter}
-              onChange={(e) =>
-                setCategoryFilter(
-                  e.target.value === "all" ? "all" : Number(e.target.value),
-                )
+            <Select
+              value={String(categoryFilter)}
+              onValueChange={(value) =>
+                setCategoryFilter(value === "all" ? "all" : Number(value))
               }
             >
-              <option value="all">Todas categorias</option>
+              <SelectTrigger
+                className={`${styles.categoryFilter} ${styles.categoryFilterTrigger}`}
+                aria-label="Filtrar por categoria"
+              >
+                <SelectValue placeholder="Todas categorias" />
+              </SelectTrigger>
 
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
+              <SelectContent>
+                <SelectItem value="all">Todas categorias</SelectItem>
+
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={String(category.id)}>
+                    <span className={styles.categoryOption}>
+                      {handleIconViewer(category.icon, 17)}
+                      <span>{category.label}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div
               className={styles.filterTabs}

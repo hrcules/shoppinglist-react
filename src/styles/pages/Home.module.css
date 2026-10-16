@@ -621,7 +621,11 @@
   cursor: pointer;
 }
 
-.categoryFilterTrigger {
+.categoryFilter.categoryFilterTrigger {
+  background: var(--surface);
+}
+
+.categoryFilter.categoryFilterTrigger {
   justify-content: space-between;
   gap: 8px;
   font-weight: 400;

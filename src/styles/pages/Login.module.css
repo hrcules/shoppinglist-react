@@ -1,99 +1,13 @@
 @import url("../global.css");
-
-.Container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100vw;
-  background-image: url("../../assets/Image.png");
-  background-position: center;
-  background-size: auto;
-  background-repeat: repeat;
-}
-
-.Content {
-  background-color: var(--gray-400);
-  border: 1px solid var(--gray-300);
-  border-radius: 6px;
-  padding: 24px;
-
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 360px;
-  height: 445px;
-}
-
-.Content > h1 {
-  font-size: var(--heading-1-size);
-  font-weight: var(--heading-1-weight);
-  line-height: var(--heading-1-line-height);
-}
-.descriptionApp {
-  margin-top: 16px;
-  text-align: center;
-  font-size: var(--heading-2-size);
-  font-weight: var(--heading-2-weight);
-  line-height: var(--heading-2-line-height);
-}
-
-.descriptionApp span {
-  color: var(--purple);
-}
-
-.loginButtonContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.loginIconsApresentation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 32px 0;
-}
-
-.FormButtonProvider {
-  background-color: var(--gray-100);
-  color: var(--gray-400);
-  height: 40px;
-  padding: 8px;
-  margin-top: 16px;
-  border-radius: 6px;
-
-  font-size: var(--button-size);
-  font-weight: var(--button-weight);
-  line-height: var(--button-line-height);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.FormButtonProvider img {
-  width: 32px;
-  height: 32px;
-  margin-right: 8px;
-}
-
-.FormButtonProvider:hover {
-  background-color: var(--gray-200);
-}
-
-@media (max-width: 767px) {
-  .Container {
-    background-image: url("../../assets/image-responsive.png");
-  }
-
-  .Content {
-    justify-content: center;
-    width: calc(100% - 10%);
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-}
+.Container { display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%; padding:24px; background:radial-gradient(ellipse at 20% 15%,color-mix(in srgb,var(--purple) 13%,var(--page-bg)),transparent 42%),var(--page-bg); }
+.Content { width:min(100%,410px); padding:34px 30px; display:flex; align-items:center; flex-direction:column; border:1px solid var(--border); border-radius:25px; background:var(--surface); box-shadow:var(--card-shadow); }
+.Content > h1 { font-size:27px; font-weight:800; letter-spacing:-.8px; color:var(--text-primary); }
+.descriptionApp { margin-top:13px; text-align:center; font-size:14px; line-height:1.65; color:var(--text-secondary); }
+.descriptionApp span { color:var(--purple-light); font-weight:750; }
+.loginButtonContainer { width:100%; display:flex; flex-direction:column; align-items:stretch; justify-content:center; }
+.loginIconsApresentation { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; padding:30px 0; }
+.loginIconsApresentation span { display:grid; place-items:center; width:48px; height:48px; border:1px solid var(--border); border-radius:15px; background:var(--surface-muted); }
+.FormButtonProvider { width:100%; min-height:48px; padding:9px 14px; margin-top:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text-primary); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .2s,border .2s,transform .2s; }
+.FormButtonProvider img { width:22px; height:22px; margin:0; }
+.FormButtonProvider:hover { background:var(--surface-hover); border-color:var(--purple-light); transform:translateY(-1px); }
+@media(max-width:767px) { .Container { padding:18px; } .Content { width:100%; max-width:390px; padding:30px 22px; border-radius:22px; } .loginIconsApresentation { gap:7px; padding:25px 0; } .loginIconsApresentation span { width:43px; height:43px; } .loginIconsApresentation svg { width:26px; height:26px; } }

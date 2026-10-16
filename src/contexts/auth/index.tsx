@@ -5,14 +5,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   GithubAuthProvider,
+  onAuthStateChanged,
+  signOut as firebaseSignOut,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import Cookies from "js-cookie";
-import { Navigate } from "react-router-dom";
-
 export type AuthContextProps = {
   user: User | null;
+  authLoading: boolean;
   loginWithGoogle: () => void;
   loginWithGithub: () => void;
   signOut: () => void;
@@ -23,37 +23,32 @@ const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const loadStoreAuth = () => {
-      const sessionToken = Cookies.get("@AuthFirebase:token");
-      const sessionUser = Cookies.get("@AuthFirebase:user");
+    // Firebase Auth persists the user's session and restores it on app launch.
+    // This is more reliable on installed mobile PWAs than relying on session cookies.
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
 
-      if (sessionToken && sessionUser) {
-        setUser(JSON.parse(sessionUser));
-      }
-    };
-
-    loadStoreAuth();
+    return unsubscribe;
   }, []);
 
   const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
+
     signInWithPopup(auth, provider)
       .then(async (result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
         const user = result.user;
         setUser(user);
 
         const userRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(userRef);
 
-        if (docSnap.exists()) {
-          Cookies.set("@AuthFirebase:token", token!);
-          Cookies.set("@AuthFirebase:user", JSON.stringify(user));
-        } else {
-          await setDoc(doc(db, "users", user.uid), {
+        if (!docSnap.exists()) {
+          await setDoc(userRef, {
             name: user.displayName,
             email: user.email,
             id: user.uid,
@@ -62,32 +57,26 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           await setDoc(doc(db, "tasks", user.uid), {
             tasks: [],
           });
-
-          Cookies.set("@AuthFirebase:token", token!);
-          Cookies.set("@AuthFirebase:user", JSON.stringify(user));
         }
       })
-      .catch(() => {
-        console.error("Error login with Google");
+      .catch((error) => {
+        console.error("Erro ao entrar com Google:", error);
       });
   };
+
   const loginWithGithub = () => {
     const provider = new GithubAuthProvider();
+
     signInWithPopup(auth, provider)
       .then(async (result) => {
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
         const user = result.user;
         setUser(user);
 
         const userRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(userRef);
 
-        if (docSnap.exists()) {
-          Cookies.set("@AuthFirebase:token", token!);
-          Cookies.set("@AuthFirebase:user", JSON.stringify(user));
-        } else {
-          await setDoc(doc(db, "users", user.uid), {
+        if (!docSnap.exists()) {
+          await setDoc(userRef, {
             name: user.displayName,
             email: user.email,
             id: user.uid,
@@ -96,28 +85,24 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           await setDoc(doc(db, "tasks", user.uid), {
             tasks: [],
           });
-
-          Cookies.set("@AuthFirebase:token", token!);
-          Cookies.set("@AuthFirebase:user", JSON.stringify(user));
         }
       })
-      .catch(() => {
-        console.error("Error login with Github");
+      .catch((error) => {
+        console.error("Erro ao entrar com GitHub:", error);
       });
   };
 
   const signOut = () => {
-    Cookies.remove("@AuthFirebase:token");
-    Cookies.remove("@AuthFirebase:user");
-
-    setUser(null);
-    return <Navigate to="/login" />;
+    void firebaseSignOut(auth).catch((error) => {
+      console.error("Erro ao sair da conta:", error);
+    });
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        authLoading,
         loginWithGoogle,
         loginWithGithub,
         signed: !!user,

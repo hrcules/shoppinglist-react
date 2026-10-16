@@ -5,6 +5,7 @@ import GithubSVG from "../assets/github.svg";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../utils/hooks/useAuth";
 import { categories, iconProps } from "../utils/categories";
+import { Button } from "@/components/ui/button";
 import {
   Apple,
   Beef,
@@ -19,67 +20,118 @@ function Login() {
 
   const handleIconViewer = (icon: iconProps) => {
     if (icon.name === "Sandwich") {
-      return <Sandwich size={32} color={icon.color} />;
+      return <Sandwich size={28} color={icon.color} />;
     } else if (icon.name === "Carrot") {
-      return <Carrot size={32} color={icon.color} />;
+      return <Carrot size={28} color={icon.color} />;
     } else if (icon.name === "Beef") {
-      return <Beef size={32} color={icon.color} />;
+      return <Beef size={28} color={icon.color} />;
     } else if (icon.name === "Apple") {
-      return <Apple size={32} color={icon.color} />;
+      return <Apple size={28} color={icon.color} />;
     } else if (icon.name === "Milk") {
-      return <Milk size={32} color={icon.color} />;
+      return <Milk size={28} color={icon.color} />;
     } else if (icon.name === "ShoppingCart") {
-      return <ShoppingCart size={32} color={icon.color} />;
+      return <ShoppingCart size={28} color={icon.color} />;
     }
+
+    return null;
   };
 
   const loginGoogle = async () => {
     await loginWithGoogle();
   };
+
   const loginGithub = async () => {
     await loginWithGithub();
   };
 
-  if (!signed) {
-    return (
-      <div className={styles.Container}>
-        <div className={styles.Content}>
-          <h1>Login</h1>
-          <p className={styles.descriptionApp}>
-            Faça suas compras de <br /> forma <span>prática</span> e{" "}
-            <span>organizada</span> !
-          </p>
+  if (signed) {
+    return <Navigate to="/" replace />;
+  }
 
-          <div className={styles.loginIconsApresentation}>
-            {categories.map((category, key) => (
-              <span key={key}>{handleIconViewer(category.icon)}</span>
-            ))}
+  return (
+    <main className={styles.Container}>
+      <section className={styles.Content} aria-labelledby="login-title">
+        <header className={styles.brand}>
+          <div className={styles.brandIcon}>
+            <ShoppingCart size={23} strokeWidth={2.3} />
+          </div>
+
+          <span className={styles.brandName}>Lista de compras</span>
+        </header>
+
+        <div className={styles.introduction}>
+          <span className={styles.eyebrow}>MAIS PRATICIDADE NO SEU DIA</span>
+
+          <h1 id="login-title">
+            Suas compras,
+            <br />
+            <span>em ordem.</span>
+          </h1>
+
+          <p className={styles.descriptionApp}>
+            Organize sua lista, acompanhe seus produtos e tenha tudo o que
+            precisa em um só lugar.
+          </p>
+        </div>
+
+        <div
+          className={styles.loginIconsApresentation}
+          aria-label="Categorias de produtos"
+        >
+          {categories.map((category, index) => (
+            <span
+              key={category.icon.name ?? index}
+              className={styles.categoryIcon}
+              title={category.icon.name}
+            >
+              {handleIconViewer(category.icon)}
+            </span>
+          ))}
+        </div>
+
+        <div className={styles.loginOptions}>
+          <div className={styles.loginOptionsHeader}>
+            <h2>Vamos começar?</h2>
+            <p>Escolha uma conta para entrar.</p>
           </div>
 
           <div className={styles.loginButtonContainer}>
-            <button
+            <Button
               type="button"
+              variant="outline"
               className={styles.FormButtonProvider}
-              onClick={() => loginGoogle()}
+              onClick={loginGoogle}
             >
-              {" "}
-              <img src={GoogleSVG} /> Faça login com o Google
-            </button>
-            <button
+              <img src={GoogleSVG} alt="" aria-hidden="true" />
+              <span>Continuar com Google</span>
+            </Button>
+
+            <Button
               type="button"
+              variant="outline"
               className={styles.FormButtonProvider}
-              onClick={() => loginGithub()}
+              onClick={loginGithub}
             >
-              {" "}
-              <img src={GithubSVG} /> Faça login com o Github
-            </button>
+              <img src={GithubSVG} alt="" aria-hidden="true" />
+              <span>Continuar com GitHub</span>
+            </Button>
           </div>
         </div>
-      </div>
-    );
-  } else {
-    return <Navigate to={"/"} />;
-  }
+
+        <footer className={styles.footer}>
+          <span className={styles.footerIcon}>
+            <ShoppingCart size={15} />
+          </span>
+
+          <p>
+            Menos preocupação na hora de comprar.
+            <br />
+            Mais organização no seu dia a dia.
+          </p>
+        </footer>
+      </section>
+    </main>
+  );
 }
 
 export default Login;

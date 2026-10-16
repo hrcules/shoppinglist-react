@@ -1,4 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { categoriesProps } from "../../utils/categories";
 import { db } from "../../services/firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -31,127 +36,120 @@ const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
 const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const [items, setItems] = useState<ItemProps[]>([]);
+  const itemsRef = useRef<ItemProps[]>([]);
   const [itemsLoading, setItemsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); // Página atual
+  const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage, setTaskPerPage] = useState(7);
 
   const startIndex = (currentPage - 1) * tasksPerPage;
   const endIndex = startIndex + tasksPerPage;
-
   const displayedItems = items.slice(startIndex, endIndex);
   const totalPages = Math.ceil(items.length / tasksPerPage);
 
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const updateLocalItems = (nextItems: ItemProps[]) => {
+    // Update the ref synchronously so rapid edits build on the latest local state.
+    itemsRef.current = nextItems;
+    setItems(nextItems);
   };
 
-  const prevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
-  };
+  const persistItems = (user_id: string, nextItems: ItemProps[]) => {
+    if (!user_id) return;
 
-  const handleAddingItem = async (item: ItemProps, user_id: string) => {
-    try {
-      const taskRef = doc(db, "tasks", user_id);
-      const taskDoc = await getDoc(taskRef);
-
-      if (taskDoc.exists()) {
-        const tasksArray: [ItemProps] = taskDoc.data().tasks;
-        tasksArray.unshift(item); // Adiciona a nova tarefa como a primeira da lista
-
-        await updateDoc(taskRef, { tasks: tasksArray });
-
-        setItems(tasksArray);
-      } else {
-        console.error("Documento não encontrado para o usuário.");
-      }
-    } catch (error) {
-      console.error("Erro ao adicionar a tarefa:", error);
-    }
-  };
-
-  const handleDeleteTask = async (user_id: string, task_id: string) => {
+    // Firestore applies this write to its local cache immediately and queues it
+    // for synchronization when the device reconnects.
     const taskRef = doc(db, "tasks", user_id);
-    const taskDoc = await getDoc(taskRef);
-
-    if (taskDoc.exists()) {
-      const tasksArray = taskDoc.data().tasks || [];
-      const novaListaTarefas = tasksArray.filter(
-        (task: ItemProps) => task.id !== task_id
+    void updateDoc(taskRef, { tasks: nextItems }).catch((error) => {
+      console.error("Erro ao sincronizar a lista de compras:", error);
+      toast.error(
+        "Não foi possível sincronizar a lista. Verifique sua conexão e tente novamente."
       );
-
-      await updateDoc(taskRef, { tasks: novaListaTarefas });
-      setItems(novaListaTarefas);
-      toast.success("Item deletado com sucesso!");
-    } else {
-      console.error("Documento não encontrado para o usuário.");
-    }
+    });
   };
 
-  const handleToggleTaskCompletion = async (
-    user_id: string,
-    task_id: string
-  ) => {
-    try {
-      const taskRef = doc(db, "tasks", user_id);
-      const taskDoc = await getDoc(taskRef);
-
-      if (taskDoc.exists()) {
-        const tasksArray: ItemProps[] = taskDoc.data().tasks || [];
-        const updatedTasks = tasksArray.map((task) => {
-          if (task.id === task_id) {
-            return {
-              ...task,
-              completed: !task.completed, // Alterna entre true e false
-            };
-          }
-          return task;
-        });
-
-        await updateDoc(taskRef, { tasks: updatedTasks });
-        setItems(updatedTasks);
-        console.log("Tarefa atualizada com sucesso!");
-      } else {
-        console.error("Documento não encontrado para o usuário.");
-      }
-    } catch (error) {
-      console.error("Erro ao atualizar a tarefa:", error);
+  const handleAddingItem = (item: ItemProps, user_id: string) => {
+    if (!user_id) {
+      toast.error("Faça login para alterar sua lista.");
+      return;
     }
+
+    const nextItems = [item, ...itemsRef.current];
+    updateLocalItems(nextItems);
+    persistItems(user_id, nextItems);
   };
 
-  // Atualiza a quantidade de tarefas por página ao carregar a página ou redimensionar a janela
+  const handleDeleteTask = (user_id: string, task_id: string) => {
+    if (!user_id) return;
+
+    const nextItems = itemsRef.current.filter((task) => task.id !== task_id);
+    updateLocalItems(nextItems);
+    persistItems(user_id, nextItems);
+    toast.success("Item deletado com sucesso!");
+  };
+
+  const handleToggleTaskCompletion = (user_id: string, task_id: string) => {
+    if (!user_id) return;
+
+    const nextItems = itemsRef.current.map((task) =>
+      task.id === task_id
+        ? { ...task, completed: !task.completed }
+        : task
+    );
+
+    updateLocalItems(nextItems);
+    persistItems(user_id, nextItems);
+  };
+
   useEffect(() => {
     const updateTasksPerPage = () => {
       if (window.innerWidth <= 767) {
-        setTaskPerPage(4); // Por exemplo, 15 tarefas por página para telas maiores que 1200px
+        setTaskPerPage(4);
       } else {
-        setTaskPerPage(7); // Quantidade padrão de tarefas por página
+        setTaskPerPage(7);
       }
     };
+
+    updateTasksPerPage();
     window.addEventListener("resize", updateTasksPerPage);
     return () => window.removeEventListener("resize", updateTasksPerPage);
   }, []);
 
   useEffect(() => {
-    setItemsLoading(true);
+    let cancelled = false;
 
-    const handleExistingItems = async () => {
+    const loadItems = async () => {
       if (!user) {
-        toast.error("Não foi possível carregar as tasks.");
+        updateLocalItems([]);
+        setItemsLoading(false);
         return;
       }
 
-      const taskRef = doc(db, "tasks", user.uid);
-      const taskDoc = await getDoc(taskRef);
+      setItemsLoading(true);
 
-      const tasksArray: [ItemProps] = taskDoc.data()?.tasks || [];
+      try {
+        const taskRef = doc(db, "tasks", user.uid);
+        const taskDoc = await getDoc(taskRef);
+        const tasksArray = (taskDoc.data()?.tasks || []) as ItemProps[];
 
-      setItems(tasksArray);
-      setItemsLoading(false);
+        if (!cancelled) {
+          updateLocalItems(tasksArray);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar a lista de compras:", error);
+        if (!cancelled) {
+          toast.error(
+            "Não foi possível carregar a lista. Conecte-se à internet para tentar novamente."
+          );
+        }
+      } finally {
+        if (!cancelled) setItemsLoading(false);
+      }
     };
 
-    if (user) {
-      handleExistingItems();
-    }
+    void loadItems();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   return (
@@ -164,8 +162,8 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
         handleToggleTaskCompletion,
         currentPage,
         totalPages,
-        nextPage,
-        prevPage,
+        nextPage: () => setCurrentPage((page) => page + 1),
+        prevPage: () => setCurrentPage((page) => Math.max(1, page - 1)),
       }}
     >
       {children}

@@ -42,6 +42,7 @@ function Home() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#0c0c0d" : "#f7f5fa");
     try { localStorage.setItem("shopping-list-theme", theme); } catch { /* storage may be unavailable */ }
   }, [theme]);
 

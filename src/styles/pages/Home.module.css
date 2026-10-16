@@ -621,8 +621,25 @@
   cursor: pointer;
 }
 
-.categoryFilter:focus {
+.categoryFilterTrigger {
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 400;
+  box-shadow: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.categoryFilterTrigger:hover {
+  background: var(--surface);
+}
+
+.categoryFilterTrigger:focus,
+.categoryFilterTrigger:focus-visible,
+.categoryFilterTrigger[data-state="open"] {
   border-color: var(--purple-light);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--purple) 14%, transparent);
 }
 
 .filterTabs {

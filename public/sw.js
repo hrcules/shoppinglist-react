@@ -10,8 +10,24 @@ const APP_SHELL = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.addAll(APP_SHELL);
+
+      // Pre-cache the JS/CSS referenced by the production HTML so the app
+      // can render offline immediately after its first successful install.
+      const htmlResponse = await cache.match("/");
+      if (htmlResponse) {
+        const html = await htmlResponse.text();
+        const assets = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]
+          .map((match) => match[1])
+          .filter((path) => path.startsWith("/assets/"));
+
+        if (assets.length) await cache.addAll(assets);
+      }
+    })()
   );
+
   self.skipWaiting();
 });
 
@@ -42,7 +58,7 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.ok) {
             const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put("/", copy));
+            void caches.open(CACHE_NAME).then((cache) => cache.put("/", copy));
           }
           return response;
         })
@@ -60,12 +76,13 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.ok && response.type === "basic") {
             const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+            void caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
           return response;
         })
         .catch(() => cachedResponse);
 
+      // Serve cached assets immediately while refreshing them in the background.
       return cachedResponse || networkResponse;
     })
   );

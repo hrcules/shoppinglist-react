@@ -25,10 +25,6 @@ export type MakeItemsProps = {
   handleAddingItem: (item: ItemProps, user_id: string) => void;
   handleDeleteTask: (user_id: string, task_id: string) => void;
   handleToggleTaskCompletion: (user_id: string, task_id: string) => void;
-  currentPage: number;
-  totalPages: number;
-  nextPage: () => void;
-  prevPage: () => void;
 };
 
 const MakeItemsContext = createContext<MakeItemsProps>({} as MakeItemsProps);
@@ -38,14 +34,6 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const itemsRef = useRef<ItemProps[]>([]);
   const [itemsLoading, setItemsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [tasksPerPage, setTaskPerPage] = useState(7);
-
-  const startIndex = (currentPage - 1) * tasksPerPage;
-  const endIndex = startIndex + tasksPerPage;
-  const displayedItems = items.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(items.length / tasksPerPage);
-
   const updateLocalItems = (nextItems: ItemProps[]) => {
     // Update the ref synchronously so rapid edits build on the latest local state.
     itemsRef.current = nextItems;
@@ -100,20 +88,6 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const updateTasksPerPage = () => {
-      if (window.innerWidth <= 767) {
-        setTaskPerPage(4);
-      } else {
-        setTaskPerPage(7);
-      }
-    };
-
-    updateTasksPerPage();
-    window.addEventListener("resize", updateTasksPerPage);
-    return () => window.removeEventListener("resize", updateTasksPerPage);
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
 
     const loadItems = async () => {
@@ -155,15 +129,11 @@ const MakeItemsProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <MakeItemsContext.Provider
       value={{
-        items: displayedItems,
+        items,
         handleAddingItem,
         itemsLoading,
         handleDeleteTask,
         handleToggleTaskCompletion,
-        currentPage,
-        totalPages,
-        nextPage: () => setCurrentPage((page) => page + 1),
-        prevPage: () => setCurrentPage((page) => Math.max(1, page - 1)),
       }}
     >
       {children}

@@ -3,7 +3,7 @@
 .homePage {
   min-height: 100vh;
   width: 100%;
-  padding: 34px 24px 48px;
+  padding: calc(34px + env(safe-area-inset-top)) 24px 48px;
   background: var(--page-bg);
   color: var(--text-primary);
   transition:
@@ -736,10 +736,6 @@
   color: var(--text-muted);
 }
 
-.paginationWrap {
-  margin-bottom: 14px;
-}
-
 .footer {
   justify-content: space-between;
   gap: 12px;
@@ -807,7 +803,7 @@
 /* Celular */
 @media (max-width: 600px) {
   .homePage {
-    padding: 22px 16px calc(94px + env(safe-area-inset-bottom));
+    padding: calc(22px + env(safe-area-inset-top)) 16px calc(94px + env(safe-area-inset-bottom));
   }
 
   .homeWelcome {

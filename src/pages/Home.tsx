@@ -20,7 +20,6 @@ import { useMakeItems } from "../utils/hooks/useMakeItems";
 import { useAuth } from "../utils/hooks/useAuth";
 import { FadeLoader } from "react-spinners";
 import Item from "../components/Item";
-import Pagination from "../components/Pagination";
 
 import { Input } from "../components/ui/input";
 import {
@@ -35,7 +34,7 @@ import { Button } from "../components/ui/button";
 type ListFilter = "all" | "pending" | "completed";
 
 function Home() {
-  const { items, handleAddingItem, itemsLoading, totalPages } = useMakeItems();
+  const { items, handleAddingItem, itemsLoading } = useMakeItems();
   const { user, signOut } = useAuth();
 
   const firstName = user?.displayName?.split(" ")[0] || "por aqui";
@@ -385,7 +384,7 @@ function Home() {
             <div className={styles.progressSummary}>
               <div className={styles.progressInfo}>
                 <span className={styles.progressLabel}>
-                  Progresso da página
+                  Progresso da lista
                 </span>
 
                 <div className={styles.progressNumbers}>
@@ -403,8 +402,8 @@ function Home() {
                   {items.length === 0
                     ? "Adicione itens para começar"
                     : pendingCount === 0
-                      ? "Todos os itens desta página foram concluídos!"
-                      : `${pendingCount} ${pendingCount === 1 ? "item pendente" : "itens pendentes"} nesta página`}
+                      ? "Todos os itens da lista foram concluídos!"
+                      : `${pendingCount} ${pendingCount === 1 ? "item pendente" : "itens pendentes"} na lista`}
                 </span>
               </div>
             </div>
@@ -413,7 +412,7 @@ function Home() {
           <div
             className={styles.progressTrack}
             role="progressbar"
-            aria-label="Progresso dos itens desta página"
+            aria-label="Progresso dos itens da lista"
             aria-valuenow={completedPercentage}
             aria-valuemin={0}
             aria-valuemax={100}
@@ -508,12 +507,6 @@ function Home() {
             </div>
           </div>
 
-          {totalPages > 1 && (
-            <div className={styles.paginationWrap}>
-              <Pagination />
-            </div>
-          )}
-
           <div className={styles.homeShoppingList}>
             {itemsLoading ? (
               <div className={styles.homeLoading}>
@@ -545,7 +538,7 @@ function Home() {
                   {search
                     ? "Tente buscar por outro nome."
                     : listFilter === "pending"
-                      ? "Você concluiu todos os itens desta página."
+                      ? "Você concluiu todos os itens da lista."
                       : listFilter === "completed"
                         ? "Marque um item quando terminar de comprar."
                         : "Adicione o primeiro item usando o formulário acima."}
